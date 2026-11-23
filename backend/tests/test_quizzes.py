@@ -39,4 +39,26 @@ def test_create_and_list_quiz():
     assert "Capitales" in titles
 
 
-# TODO (tú): test de GET /quizzes/{id} que no existe -> 404
+def test_get_quiz_not_found():
+    r = client.get("/quizzes/999")
+    assert r.status_code == 404
+
+
+def test_get_update_delete_quiz():
+    quiz_id = client.post("/quizzes", json={"title": "Viejo"}).json()["id"]
+
+    assert client.get(f"/quizzes/{quiz_id}").json()["title"] == "Viejo"
+
+    r = client.put(f"/quizzes/{quiz_id}", json={"title": "Nuevo", "description": "editado"})
+    assert r.status_code == 200
+    assert r.json()["title"] == "Nuevo"
+    assert r.json()["description"] == "editado"
+
+    assert client.delete(f"/quizzes/{quiz_id}").status_code == 204
+    assert client.get(f"/quizzes/{quiz_id}").status_code == 404
+    assert client.delete(f"/quizzes/{quiz_id}").status_code == 404
+
+
+def test_update_not_found():
+    r = client.put("/quizzes/999", json={"title": "X"})
+    assert r.status_code == 404
