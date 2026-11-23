@@ -1,0 +1,4 @@
+[
+  "tests/test_quizzes.py::test_create_and_list_quiz",
+  "tests/test_quizzes.py::test_health"
+]
